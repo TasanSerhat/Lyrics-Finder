@@ -7,7 +7,8 @@ function getLyrics() {
         return;
     }
 
-    const url = `https://api.lyrics.ovh/v1/${artist}/${song}`;
+    const proxy = "https://cors-anywhere.herokuapp.com/";
+    const url = proxy + `https://api.lyrics.ovh/v1/${artist}/${song}`;
 
     fetch(url)
         .then(response => response.json())
