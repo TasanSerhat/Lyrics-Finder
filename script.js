@@ -7,11 +7,16 @@ function getLyrics() {
         return;
     }
 
-    const proxy = "https://cors-anywhere.herokuapp.com/";
-    const url = proxy + `https://api.lyrics.ovh/v1/${artist}/${song}`;
+    const apiUrl = `https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(song)}`;
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
 
-    fetch(url)
-        .then(response => response.json())
+    fetch(proxyUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.lyrics) {
                 document.getElementById('lyrics').innerText = data.lyrics;
@@ -20,7 +25,7 @@ function getLyrics() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('lyrics').innerText = "An error occurred.";
+            console.error("API error:", error);
+            document.getElementById('lyrics').innerText = "Error fetching lyrics.";
         });
 }
