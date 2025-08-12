@@ -348,7 +348,7 @@
     </div>
 
     <script>
-        // Lyrics Finder - LRCLIB API kullanımı (2025 güncel)
+  
         let isSearching = false;
 
         function getLyrics() {
@@ -365,10 +365,10 @@
             isSearching = true;
             updateSearchButton(true);
 
-            // Loading mesajı göster
+
             document.getElementById('lyrics').innerHTML = '<div class="loading">Searching for lyrics...</div>';
 
-            // Önce LRCLIB API'yi dene (tamamen ücretsiz, CORS destekli)
+  
             tryLRCLIB();
             
             function tryLRCLIB() {
@@ -404,7 +404,7 @@
             }
 
             function tryFallbackAPIs() {
-                // Yedek API'ler
+         
                 const fallbackAPIs = [
                     {
                         name: 'Lyrics.ovh with AllOrigins',
@@ -530,7 +530,7 @@
             lyricsDiv.innerHTML = `<div class="${className}">${message}</div>`;
         }
 
-        // Enter tuşu ile arama yapabilmek için
+   
         document.addEventListener('DOMContentLoaded', function() {
             const artistInput = document.getElementById('artist');
             const songInput = document.getElementById('song');
@@ -558,14 +558,14 @@
             console.log('✨ Optimized for static hosting platforms');
         });
 
-        // Örnekler için hızlı test fonksiyonu
+      
         function testSearch(artist, song) {
             document.getElementById('artist').value = artist;
             document.getElementById('song').value = song;
             getLyrics();
         }
 
-        // Konsol'da test örnekleri
+       
         console.log('Test examples:');
         console.log('testSearch("Adele", "Hello")');
         console.log('testSearch("Ed Sheeran", "Shape of You")');

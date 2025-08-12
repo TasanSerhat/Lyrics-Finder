@@ -348,7 +348,7 @@
     </div>
 
     <script>
-        // Lyrics Finder - Statik hosting için optimize edilmiş versiyon
+        
         let isSearching = false;
 
         function getLyrics() {
@@ -365,10 +365,10 @@
             isSearching = true;
             updateSearchButton(true);
 
-            // Loading mesajı göster
+            
             document.getElementById('lyrics').innerHTML = '<div class="loading">Searching for lyrics...</div>';
 
-            // Ücretsiz CORS proxy servisleri (statik hosting uyumlu)
+            
             const proxies = [
                 {
                     url: 'https://api.allorigins.win/get?url=',
@@ -386,7 +386,7 @@
 
             const targetUrl = `https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(song)}`;
             
-            // İlk proxy'yi dene
+            
             tryWithProxy(0);
             
             function tryWithProxy(proxyIndex) {
@@ -417,7 +417,7 @@
                         const parsedData = proxy.parser(data);
                         
                         if (parsedData.lyrics && parsedData.lyrics.trim() !== "") {
-                            // Başarılı! Şarkı sözlerini göster
+                            
                             displayLyrics(parsedData.lyrics, artist, song);
                             console.log(`Success with proxy ${proxyIndex + 1}`);
                         } else {
@@ -426,7 +426,7 @@
                     })
                     .catch(error => {
                         console.log(`Proxy ${proxyIndex + 1} failed:`, error.message);
-                        // Sonraki proxy'yi dene
+                        
                         setTimeout(() => tryWithProxy(proxyIndex + 1), 500);
                     });
             }
@@ -503,7 +503,6 @@
             lyricsDiv.innerHTML = `<div class="${className}">${message}</div>`;
         }
 
-        // Enter tuşu ile arama yapabilmek için
         document.addEventListener('DOMContentLoaded', function() {
             const artistInput = document.getElementById('artist');
             const songInput = document.getElementById('song');
@@ -531,14 +530,12 @@
             console.log('✨ Optimized for static hosting platforms');
         });
 
-        // Örnekler için hızlı test fonksiyonu
         function testSearch(artist, song) {
             document.getElementById('artist').value = artist;
             document.getElementById('song').value = song;
             getLyrics();
         }
 
-        // Konsol'da test örnekleri
         console.log('Test examples:');
         console.log('testSearch("Adele", "Hello")');
         console.log('testSearch("Ed Sheeran", "Shape of You")');
