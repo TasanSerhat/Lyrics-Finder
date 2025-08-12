@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyrics Finder</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cal+Sans&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Ubuntu', Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            font-family: "Cal Sans", sans-serif;
+            color: #4a5568;
+            font-size: 32px;
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px auto;
+            max-width: 500px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .form-title {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Ubuntu', sans-serif;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.9);
+        }
+
+        input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input::placeholder {
+            color: #a0aec0;
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 15px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-btn:active {
+            transform: translateY(0);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #lyrics {
+            margin: 30px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            max-width: 800px;
+            min-height: 200px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: left;
+            line-height: 1.8;
+            font-size: 16px;
+            white-space: pre-line;
+            color: #2d3748;
+            transition: all 0.3s ease;
+        }
+
+        .lyrics-content {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alternative-links {
+            text-align: center;
+        }
+
+        .alternative-links h3 {
+            color: #e53e3e;
+            margin-bottom: 20px;
+        }
+
+        .link-button {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .google-link {
+            background: #4285f4;
+            color: white;
+        }
+
+        .google-link:hover {
+            background: #3367d6;
+            transform: translateY(-2px);
+        }
+
+        .genius-link {
+            background: #ffff64;
+            color: #333;
+        }
+
+        .genius-link:hover {
+            background: #ffff40;
+            transform: translateY(-2px);
+        }
+
+        #about {
+            margin: 60px auto 40px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            max-width: 600px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        #about h2 {
+            color: #2d3748;
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 500;
+        }
+
+        #about p {
+            color: #4a5568;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        #about a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        #about a:hover {
+            color: #4c51bf;
+            text-decoration: underline;
+        }
+
+        .social-links {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+
+            .navbar h1 {
+                font-size: 24px;
+            }
+
+            input {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            #lyrics, #about {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+
+        .error-message {
+            color: #e53e3e;
+            background: #fed7d7;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #e53e3e;
+        }
+
+        .success-message {
+            color: #38a169;
+            background: #c6f6d5;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #38a169;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="container">
+                <h1>🎵 Lyrics Finder</h1>
+            </div>
+        </div>
+    </header>      
+
+    <div class="container">
+        <div class="main-content">
+            <div class="form-container">
+                <h2 class="form-title">Find Your Favorite Song Lyrics</h2>
+                <div class="input-group">
+                    <input type="text" id="artist" placeholder="Enter artist name (e.g., Adele)">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="song" placeholder="Enter song name (e.g., Hello)">
+                </div>
+                <button class="search-btn" onclick="getLyrics()">🔍 Search Lyrics</button>
+            </div>
+
+            <div id="lyrics">
+                <div style="color: #718096; font-style: italic;">
+                    Enter an artist and song name above to search for lyrics...
+                </div>
+            </div>
+
+            <div id="about">
+                <h2>About This Project</h2>
+                <p>This lyrics finder application was developed for educational and demonstration purposes.</p>
+                <p><strong>Developer:</strong> Serhat Talha Taşan</p>
+                <p><strong>Contact:</strong> tasanserhattalha@gmail.com</p>
+                
+                <div class="social-links">
+                    <p>
+                        <strong>LinkedIn:</strong>
+                        <a href="https://linkedin.com/in/serhat-talha-taşan/" target="_blank">linkedin.com/in/serhat-talha-taşan/</a>
+                    </p>
+                    <p>
+                        <strong>GitHub:</strong>
+                        <a href="https://github.com/TasanSerhat" target="_blank">github.com/TasanSerhat</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+  
+        let isSearching = false;
+
+        function getLyrics() {
+            if (isSearching) return;
+
+            const artist = document.getElementById('artist').value.trim();
+            const song = document.getElementById('song').value.trim();
+
+            if (artist === "" || song === "") {
+                showMessage("⚠️ Please enter both artist and song name!", "error");
+                return;
+            }
+
+            isSearching = true;
+            updateSearchButton(true);
+
+
+            document.getElementById('lyrics').innerHTML = '<div class="loading">Searching for lyrics...</div>';
+
+  
+            tryLRCLIB();
+            
+            function tryLRCLIB() {
+                const lrcUrl = `https://lrclib.net/api/search?artist_name=${encodeURIComponent(artist)}&track_name=${encodeURIComponent(song)}`;
+                
+                console.log('Trying LRCLIB API...');
+                
+                fetch(lrcUrl, {
+                    method: 'GET',
+                    headers: {
+                        'User-Agent': 'Lyrics Finder (tasanserhattalha@gmail.com)'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`LRCLIB HTTP ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && data.length > 0 && data[0].plainLyrics) {
+                            displayLyrics(data[0].plainLyrics, artist, song, 'LRCLIB');
+                            console.log('✅ Success with LRCLIB API');
+                        } else {
+                            console.log('LRCLIB: No lyrics found, trying fallback...');
+                            tryFallbackAPIs();
+                        }
+                    })
+                    .catch(error => {
+                        console.log('LRCLIB failed:', error.message);
+                        tryFallbackAPIs();
+                    });
+            }
+
+            function tryFallbackAPIs() {
+         
+                const fallbackAPIs = [
+                    {
+                        name: 'Lyrics.ovh with AllOrigins',
+                        url: `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.lyrics.ovh/v1/${artist}/${song}`)}`,
+                        parser: (data) => {
+                            const parsed = JSON.parse(data.contents);
+                            return parsed.lyrics;
+                        }
+                    },
+                    {
+                        name: 'Alternative LRCLIB endpoint',
+                        url: `https://lrclib.net/api/get?artist_name=${encodeURIComponent(artist)}&track_name=${encodeURIComponent(song)}`,
+                        parser: (data) => data.plainLyrics || data.syncedLyrics
+                    }
+                ];
+
+                tryFallbackAPI(0);
+
+                function tryFallbackAPI(index) {
+                    if (index >= fallbackAPIs.length) {
+                        showAlternativeLinks();
+                        return;
+                    }
+
+                    const api = fallbackAPIs[index];
+                    console.log(`Trying ${api.name}...`);
+
+                    fetch(api.url)
+                        .then(response => response.json())
+                        .then(data => {
+                            const lyrics = api.parser(data);
+                            if (lyrics && lyrics.trim()) {
+                                displayLyrics(lyrics, artist, song, api.name);
+                                console.log(`✅ Success with ${api.name}`);
+                            } else {
+                                throw new Error('No lyrics found');
+                            }
+                        })
+                        .catch(error => {
+                            console.log(`${api.name} failed:`, error.message);
+                            setTimeout(() => tryFallbackAPI(index + 1), 300);
+                        });
+                }
+            }
+
+            function displayLyrics(lyrics, artist, song, source) {
+                const lyricsDiv = document.getElementById('lyrics');
+                lyricsDiv.innerHTML = `
+                    <div class="lyrics-content">
+                        <div class="success-message">
+                            ✅ Lyrics found for "${song}" by ${artist}
+                            <br><small>Source: ${source}</small>
+                        </div>
+                        <div style="margin-top: 25px; font-size: 16px; line-height: 1.8; color: #2d3748; text-align: left;">
+                            <div style="background: #f7fafc; padding: 20px; border-radius: 10px; border-left: 4px solid #667eea;">
+                                ♪ Lyrics content found - Click the links below to view full lyrics ♪
+                            </div>
+                            <div style="margin-top: 20px; text-align: center;">
+                                <a href="https://genius.com/search?q=${encodeURIComponent(artist + ' ' + song)}" target="_blank" class="link-button genius-link">
+                                    View Full Lyrics on Genius
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                isSearching = false;
+                updateSearchButton(false);
+            }
+
+            function showAlternativeLinks() {
+                const searchQuery = `${artist} ${song} lyrics`;
+                const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+                const geniusUrl = `https://genius.com/search?q=${encodeURIComponent(searchQuery)}`;
+                const azlyricsQuery = `${artist} ${song}`.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '');
+                const azlyricsUrl = `https://www.azlyrics.com/lyrics/${artist.toLowerCase().replace(/[^a-z0-9]/g, '')}/${song.toLowerCase().replace(/[^a-z0-9]/g, '')}.html`;
+                
+                document.getElementById('lyrics').innerHTML = `
+                    <div class="alternative-links">
+                        <div class="error-message">
+                            ⚠️ Lyrics API services are currently unavailable
+                        </div>
+                        <h3 style="color: #2d3748; margin: 25px 0 20px;">Find lyrics for "${artist} - ${song}":</h3>
+                        <div style="margin: 25px 0;">
+                            <a href="${googleUrl}" target="_blank" class="link-button google-link">
+                                🔍 Search on Google
+                            </a>
+                            <a href="${geniusUrl}" target="_blank" class="link-button genius-link">
+                                🎤 Search on Genius
+                            </a>
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <a href="https://www.azlyrics.com/" target="_blank" class="link-button" style="background: #2d3748; color: white;">
+                                📝 Browse AZLyrics
+                            </a>
+                            <a href="https://www.lyricsfreak.com/" target="_blank" class="link-button" style="background: #38a169; color: white;">
+                                🎵 Browse LyricsFreak
+                            </a>
+                        </div>
+                        <p style="font-size: 14px; color: #718096; margin-top: 20px;">
+                            These sites are reliable sources for song lyrics
+                        </p>
+                    </div>
+                `;
+                isSearching = false;
+                updateSearchButton(false);
+            }
+        }
+
+        function updateSearchButton(searching) {
+            const button = document.querySelector('.search-btn');
+            if (searching) {
+                button.disabled = true;
+                button.innerHTML = '🔄 Searching...';
+            } else {
+                button.disabled = false;
+                button.innerHTML = '🔍 Search Lyrics';
+            }
+        }
+
+        function showMessage(message, type) {
+            const lyricsDiv = document.getElementById('lyrics');
+            const className = type === 'error' ? 'error-message' : 'success-message';
+            lyricsDiv.innerHTML = `<div class="${className}">${message}</div>`;
+        }
+
+   
+        document.addEventListener('DOMContentLoaded', function() {
+            const artistInput = document.getElementById('artist');
+            const songInput = document.getElementById('song');
+            
+            function handleEnter(e) {
+                if (e.key === 'Enter' && !isSearching) {
+                    getLyrics();
+                }
+            }
+            
+            if (artistInput) {
+                artistInput.addEventListener('keypress', handleEnter);
+            }
+            
+            if (songInput) {
+                songInput.addEventListener('keypress', handleEnter);
+            }
+
+            // Focus first input on load
+            if (artistInput) {
+                artistInput.focus();
+            }
+            
+            console.log('🎵 Lyrics Finder loaded successfully!');
+            console.log('✨ Optimized for static hosting platforms');
+        });
+
+      
+        function testSearch(artist, song) {
+            document.getElementById('artist').value = artist;
+            document.getElementById('song').value = song;
+            getLyrics();
+        }
+
+       
+        console.log('Test examples:');
+        console.log('testSearch("Adele", "Hello")');
+        console.log('testSearch("Ed Sheeran", "Shape of You")');
+        console.log('testSearch("Queen", "Bohemian Rhapsody")');
+    </script>
+</body>
+</html>
